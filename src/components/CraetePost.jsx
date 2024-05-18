@@ -32,6 +32,7 @@ import {
 } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import { Textarea } from "../../@/components/ui/textarea";
 
 export function CreatePost({ open, handleOpenChange }) {
   const { toast } = useToast();
@@ -39,6 +40,7 @@ export function CreatePost({ open, handleOpenChange }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
+  const [caption, setCaption] = useState("");
 
   const onDrop = useCallback((acceptedFiles) => {
     setSelectedFile(acceptedFiles?.[0]);
@@ -76,7 +78,7 @@ export function CreatePost({ open, handleOpenChange }) {
           .then(async (downloadURL) => {
             const post = {
               timestamp: Date.now(),
-              caption: "",
+              caption: caption,
               imageUrl: downloadURL,
               email: currentUser?.email,
               usename: currentUser?.displayName,
@@ -88,6 +90,8 @@ export function CreatePost({ open, handleOpenChange }) {
             setUploading(false);
             setSelectedFile(null);
             setProgress(0);
+            setCaption("");
+            handleOpenChange();
           })
           .catch((error) => {
             console.error("error while uploading image", error);
@@ -106,7 +110,11 @@ export function CreatePost({ open, handleOpenChange }) {
               <DialogDescription>
                 <Card>
                   <CardContent>
-                    <div className="h-[200px] flex items-center justify-center border-none">
+                    <div
+                      className={`h-[200px] flex items-center justify-center border-none ${
+                        uploading && "pointer-events-none opacity-70"
+                      }`}
+                    >
                       {selectedFile ? (
                         <div className=" w-full flex justify-between items-center">
                           <Label> {selectedFile?.name} </Label>
@@ -129,6 +137,13 @@ export function CreatePost({ open, handleOpenChange }) {
                         </div>
                       )}
                     </div>
+                    <Textarea
+                      id="content"
+                      placeholder="What's in your mind..."
+                      onChange={(e) => setCaption(e.target.value)}
+                      value={caption}
+                      disabled={uploading}
+                    />
                   </CardContent>
                 </Card>
               </DialogDescription>

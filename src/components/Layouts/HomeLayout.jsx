@@ -38,6 +38,8 @@ const HomeLayout = () => {
     setCreate(!create);
   };
 
+  console.log(currentUser);
+
   return (
     <div className="w-full h-full flex">
       <div className="hidden border-r border-gray-500 md:block w-[240px]">
@@ -111,15 +113,29 @@ const HomeLayout = () => {
             </nav>
           </div>
 
-          {userLoggedIn && (
-            <Button
-              size="sm"
-              variant="outline"
-              className=" m-5"
-              onClick={handleLogout}
-              disabled={logginOut}
-            >
-              {logginOut ? "Logging out..." : "Logout"}
+          {userLoggedIn ? (
+            <div className="w-auto p-5">
+              <div className="mb-2">
+                <p className="font-medium text-white">
+                  {currentUser?.displayName}
+                </p>
+                <p className="text-xs text-muted-foreground text-white ">
+                  {currentUser?.email}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={handleLogout}
+                disabled={logginOut}
+              >
+                {logginOut ? "Logging out..." : "Logout"}
+              </Button>
+            </div>
+          ) : (
+            <Button size="sm" className=" m-5" variant="outline" asChiild>
+              <Link to="/auth/signin"> Signin </Link>
             </Button>
           )}
         </div>

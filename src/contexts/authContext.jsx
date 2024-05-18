@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../firebase/firebase";
 // import { GoogleAuthProvider } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, updateProfile } from "firebase/auth";
 
 const AuthContext = React.createContext({});
 
@@ -36,10 +36,23 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }
 
+  const updateUserProfile = async (displayName) => {
+    try {
+      await updateProfile(auth.currentUser, { displayName });
+      setCurrentUser((prevUser) => ({
+        ...prevUser,
+        displayName,
+      }));
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+    }
+  };
+
   const value = {
     userLoggedIn,
     currentUser,
     setCurrentUser,
+    updateUserProfile,
   };
 
   return (

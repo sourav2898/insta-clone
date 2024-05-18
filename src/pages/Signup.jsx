@@ -15,6 +15,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTag from "@/src/components/ErrorTag";
 import { doCreateUserWithEmailAndPassword } from "@/src/firebase/auth";
+import { useAuth } from "../contexts/authContext";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -32,21 +33,28 @@ const validationSchema = Yup.object().shape({
       "Confirm Password and Password must match"
     ) // Ensure confirmPassword matches password
     .required("Confirm password is required"),
+  username: Yup.string().required("Username is requried"),
 });
 
 const Signup = () => {
+  const { updateUserProfile } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       confirmPassword: "",
+      username: "",
     },
     onSubmit: async (values) => {
       try {
         setSubmitting(true);
-        await doCreateUserWithEmailAndPassword(values.email, values.password);
-      } catch (error) {
+        const userCredentials = await doCreateUserWithEmailAndPassword(
+          values.email,
+          values.password
+        );
+        await updateUserProfile(values.username);
+      } catch (erroruserCredential) {
         console.error("error while creating user ", error);
       } finally {
         setSubmitting(false);
@@ -65,6 +73,20 @@ const Signup = () => {
       <CardContent>
         <form onSubmit={formik.handleSubmit}>
           <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Username</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.username}
+              />
+
+              {formik.errors.username ? (
+                <ErrorTag text={formik.errors.username} />
+              ) : null}
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
