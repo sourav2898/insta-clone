@@ -1,28 +1,39 @@
 // @ts-nocheck
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import InstagramPost from "../components/Post";
 import React from "react";
-import instagramIcon from "../assets/instagram.png";
-import instagramLogo from "../assets/instagram-logo.png";
-import { Button } from "../../@/components/ui/button";
-import { doSignOut } from "../firebase/auth";
-import { useAuth } from "../contexts/authContext";
+import Story from "../components/Story";
+import stories from "@/src/utils/stories";
 
 const Home = () => {
-  const { currentUser, userLoggedIn } = useAuth();
-
-  const handleLogout = async () => {
-    await doSignOut();
-  };
-
   return (
-    <div className="bg-black">
-      <img width="100px" className="logo" src={instagramIcon} alt="Instagram" />
-      <img width="100px" className="logo" src={instagramLogo} alt="Instagram" />
-      {userLoggedIn && (
-        <Button variant="outline" onClick={handleLogout}>
-          {" "}
-          Logout{" "}
-        </Button>
-      )}
+    <div className=" w-full h-full">
+      <div className="w-full flex items-center space-x-4 overflow-x-auto p-4 mb-5 ">
+        <div className=" w-full flex items-center justify-between space-x-4">
+          {/* <button className="flex items-center justify-center bg-transparent">
+            <ChevronLeft className="text-white" size={24} />
+          </button> */}
+          {stories.map((story, index) => (
+            <Story key={index} username={story.username} image={story.image} />
+          ))}
+          {/* <button className="flex items-center justify-center bg-transparent">
+            <ChevronRight className="text-white" size={24} />
+          </button> */}
+        </div>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-4">
+        <InstagramPost />
+
+        <InstagramPost />
+
+        <InstagramPost />
+
+        <InstagramPost />
+
+        <InstagramPost />
+
+        <InstagramPost />
+      </div>
     </div>
   );
 };

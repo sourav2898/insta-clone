@@ -12,6 +12,7 @@ import Fallback from "./components/Loaders/Fallback";
 import UnAuthLayout from "./components/Layouts/UnAuth";
 import ErrorPage from "./pages/Error";
 import { AuthProvider } from "@/src/contexts/authContext";
+import HomeLayout from "@/src/components/Layouts/HomeLayout";
 
 const Home = React.lazy(() => import("./pages/Home"));
 const Signin = React.lazy(() => import("./pages/Signin"));
@@ -25,7 +26,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <HomeLayout />,
+        children: [
+          {
+            path: "/",
+            element: <Home />,
+          },
+        ],
       },
       {
         path: "auth",
